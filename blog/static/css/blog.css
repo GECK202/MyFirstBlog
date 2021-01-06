@@ -18,6 +18,17 @@ h1, h2, h3, h4 {
     font-family: 'Lobster', cursive;
 }
 
+#c {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
 .date {
     color: #828282;
 }

@@ -15,6 +15,217 @@
             <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
         {% endif %}
         <h1>{{ post.title }}</h1>
+        <canvas id="c"></canvas>
+
+		<script type="module">
+			import * as THREE from '/static/js/three/build/three.module.js';
+			import { OrbitControls } from '/static/js/three/examples/jsm/controls/OrbitControls.js';
+			import { CSS2DRenderer, CSS2DObject } from '/static/js/three/examples/jsm/renderers/CSS2DRenderer.js';
+			import { TWEEN } from '/static/js/three/examples/jsm/libs/tween.module.min.js';
+
+			let camera, scene, renderer, labelRenderer;
+			let m=[];
+			const REP_DELY = 2000;
+			const clock = new THREE.Clock();
+			const textureLoader = new THREE.TextureLoader();
+			const db = [
+			10, 11, 15, 18,
+			19.0, 20.0, 21.0, 25, 22.75,
+
+			];
+
+			const db2 = [
+			3, 2, 1.5, 1.8,
+			10.0, 20.0, 20.0, 25, 22.75,
+
+			];
+			//1.0, 3.0, 2.0, 2.5, 2.75, 1, 0.3, 2, 1.5, 1.8,
+			//1.0, 3.0, 2.0, 2.5, 2.75, 1, 0.3, 2, 1.5, 1.8
+			//];
+			class Planet {
+				constructor(pos, geometry, material, materialw, height, text, offset, isScale, aTime, startDelay){
+					this.elem = new THREE.Object3D();
+					this.elem.translateX(pos.x);
+					this.elem.translateY(pos.y);
+					this.elem.translateZ(pos.z);
+					scene.add(this.elem);
+					this.targ = new THREE.Object3D();
+					this.elem.add( this.targ );
+					this.mesh = new THREE.Mesh( geometry, material );
+					this.meshw = new THREE.Mesh( geometry, materialw);
+					this.mesh.add(this.meshw);
+					//this.mesh.translateX(pos.x);
+					this.elem.add( this.mesh );
+					this.earthDiv = document.createElement( 'div' );
+					this.earthDiv.className = 'label';
+					this.earthDiv.textContent = height;
+					//this.earthDiv.style.marginTop = '25em';
+					this.earthDiv.style.color = '#FFF';
+					this.earthDiv.style.fontFamily = 'sans-serif';
+					this.earthDiv.style.fontSize = '1.2ch';
+					//this.earthDiv.style.padding = '2px';
+					this.earthDiv.style.backgroundColor ='rgba( 0, 0, 0, 1)';
+					this.earthDiv.style.opacity ='1';
+
+					this.earthLabel = new CSS2DObject( this.earthDiv );
+					this.earthLabel.position.set( 0, offset, 0 );
+					this.targ.add( this.earthLabel );
+
+					if (isScale == true) {
+						this.mesh.scale.y = 0;
+						this.target = this.mesh.position.clone();//new THREE.Vector3(3,0,0);//{ x : 1, y: 3 };
+						this.target.y += height;
+						this.tween12 = new TWEEN.Tween(this.mesh.position)
+							.to(this.target, aTime)
+							.repeat(Infinity)
+							.repeatDelay(REP_DELY)
+							.yoyo(true)
+							.delay(startDelay)
+							.easing(TWEEN.Easing.Elastic.InOut)
+							.start();
+
+						this.starget = new THREE.Vector3(1,height,1);
+						this.tween22 = new TWEEN.Tween(this.mesh.scale)
+							.to(this.starget, aTime)
+							.repeat(Infinity)
+							.repeatDelay(REP_DELY)
+							.yoyo(true)
+							.delay(startDelay)
+							.easing(TWEEN.Easing.Elastic.InOut)
+							.start();
+
+						this.tween32 = new TWEEN.Tween(this.targ.position)
+							.to(this.target, aTime)
+							.repeat(Infinity)
+							.repeatDelay(REP_DELY)
+							.yoyo(true)
+							.delay(startDelay)
+							.easing(TWEEN.Easing.Elastic.InOut)
+							.start();
+					}
+					//*/
+				}
+			}
+
+			init();
+			selectTemplate(db, new THREE.Vector3(0,0,0), 'wave', 'sphere', 6);
+			selectTemplate(db2, new THREE.Vector3(2,0,0), 'wave', 'cube', 6);
+			//createObjects(db, 50000, 50, 2, 'cube');
+			animate();
+
+			function selectTemplate(data, pos, template, typef, offset){
+				switch(template) {
+					case 'wave':
+						createObjects(data, pos, 50000, 50, offset, typef);
+						break;
+					case 'default_2':
+						createObjects(data, pos, 5000, 5, offset, typef);
+						break;
+				}
+			}
+
+			function init() {
+
+                const canvas = document.querySelector('#c');
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 200 );
+				camera.position.set( 10, 100, 20 );
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color(0x505160);
+				const dirLight = new THREE.DirectionalLight( 0xffffff );
+				dirLight.position.set( 0, 0, 1 );
+				scene.add( dirLight );
+
+				const size = db.length*2+1;
+				const divisions = db.length+2;
+				const gridHelperY = new THREE.GridHelper( size, divisions );
+				gridHelperY.rotateX(Math.PI/2);
+				gridHelperY.translateX(-1);
+				gridHelperY.translateZ(-5);
+				scene.add( gridHelperY );
+				const gridHelperXZ = new THREE.GridHelper( size, divisions );
+				scene.add( gridHelperXZ );
+				gridHelperXZ.translateX(-1);
+				gridHelperXZ.translateZ(4);
+
+				//renderer = new THREE.WebGLRenderer();
+
+				renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: true,
+                    premultipliedAlpha: false,
+                });
+
+				renderer.setPixelRatio( window.devicePixelRatio );
+				//renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
+				//renderer.domElement.style.position = 'absolute';
+				//renderer.domElement.style.top = '400px';
+				//document.body.appendChild( renderer.domElement );
+
+				labelRenderer = new CSS2DRenderer({
+				    canvas,
+                    alpha: true,
+                    premultipliedAlpha: false,
+				});
+				labelRenderer.setSize( window.innerWidth*3/4, window.innerHeight*3/4 );
+				labelRenderer.domElement.style.position = 'absolute';
+				labelRenderer.domElement.style.top = '220px';
+				document.body.appendChild( labelRenderer.domElement );
+
+				const controls = new OrbitControls( camera, labelRenderer.domElement );
+				controls.minDistance = 105;
+				controls.maxDistance = 200;
+
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+
+			function createObjects(db, pos, animTimeMs, delayMs, distance, typeElem) {
+				let mGeometry;
+				switch (typeElem){
+					case 'cube':
+						mGeometry = new THREE.BoxBufferGeometry( 1.9, 2, 1.9 );
+						break;
+					case 'cone':
+						mGeometry = new THREE.ConeBufferGeometry( 1, 2, 64 );
+						break;
+					case 'sphere':
+						mGeometry = new THREE.SphereBufferGeometry( 1, 16, 16 );
+				}
+				const mMat = [];
+				mMat[0] = new THREE.MeshPhongMaterial({ shininess: 5, color: '#7070ff' });
+				mMat[1] = new THREE.MeshPhongMaterial({ shininess: 5, color: '#000070' });
+
+				mMat[2] = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } );
+
+
+
+				const aTime = animTimeMs / db.length;
+				const gdist = db.length * distance / 2;
+				for (let i = 0; i < db.length; i++){
+					m.push(new Planet(new THREE.Vector3(i*distance - gdist + pos.x, pos.y ,pos.z), mGeometry, mMat[i%2], mMat[2], db[i], '2.0', -2, true, aTime, i*delayMs));
+				}
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				labelRenderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+
+			function animate() {
+				requestAnimationFrame( animate );
+				//const elapsed = clock.getElapsedTime()/1.0;
+				//moon.mesh.position.set( Math.sin( elapsed ) * 5, 0, Math.cos( elapsed ) * 5 );
+				TWEEN.update();
+				renderer.render( scene, camera );
+				labelRenderer.render( scene, camera );
+			}
+
+		</script>
+
+
+
         <p>{{ post.text|linebreaksbr }}</p>
     </div>
 
