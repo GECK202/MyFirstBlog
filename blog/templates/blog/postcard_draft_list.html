@@ -1,0 +1,11 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+{% for postcard in postcards %}
+<div class="postcard">
+	<p class="date">Создано: {{ postcard.created_date|date:'d-m-Y' }}</p>
+	<h1><a href="{% url 'postcard_detail' pk=postcard.pk %}">{{ postcard.title }}</a></h1>
+	<p>{{ postcard.text|truncatechars:200 }}</p>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'blog/base.html' %}
+
+{% block script %}
+
+<div id="container">
+	<canvas id="c"></canvas>
+	<div id="labels"></div>
+</div>
+
+
+
+<script type="module">
+	import {main, makeFigure, deleteFigure} from '/static/js/postcard/cube.js';
+	main();
+	makeFigure("Cube", "Aqua");
+	makeFigure("Cone", "Purple");
+	makeFigure("Sphere", "Gold");
+</script>
+{% endblock %}
+
+{% block content %}
+	{% for postcard in postcards %}
+		<div class="postcard">
+			<div class="date">
+				{{ postcard.published_date }}
+			</div>
+			<h1><a href="{% url 'postcard_detail' pk=postcard.pk %}">{{ postcard.title }}</a></h1>
+			<p>{{ postcard.text|linebreaksbr }}</p>
+			<a href="{% url 'postcard_detail' pk=postcard.pk %}">Комментарии: {{ postcard.approved_comments.count }}</a>
+		</div>
+	{% endfor %}
+{% endblock %}

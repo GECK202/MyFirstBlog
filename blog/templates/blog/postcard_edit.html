@@ -1,0 +1,97 @@
+{% extends 'blog/base.html' %}
+
+{% block script %}
+
+<form class="form-horizontal" name="controls" id = "contr">
+
+<fieldset>
+
+<!-- Form Name -->
+<legend>Controls</legend>
+
+<!-- Text input-->
+<div class="form-group">
+	<div class="col-md-4">
+		<input id="textinput" name="textinput" type = "number" class="form-control input-md">
+	</div>
+</div>
+
+<!-- Select Basic -->
+<div class="form-group">
+	<label class="col-md-4 control-label" for="selectbasic">Выберите цвет</label>
+	<div class="col-md-4">
+		<select id="selectbasic" name="select_color" class="form-control">
+			<option value="Aqua">Aqua</option>
+			<option value="Purple">Purple</option>
+			<option value="Gold">Gold</option>
+		</select>
+	</div>
+</div>
+
+	<!-- Select Basic -->
+<div class="form-group">
+	<label class="col-md-4 control-label" for="selectbasic">Выберите фигуру</label>
+	<div class="col-md-4">
+		<select id="selectbasic" name="select_figure" class="form-control">
+			<option value="Cube">Куб</option>
+			<option value="Cone">Конус</option>
+			<option value="Sphere">Сфера</option>
+		</select>
+	</div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+	<!--label class="col-md-4 control-label" for="singlebutton">Add box</label-->
+	<div class="col-md-4">
+		<button id="add_fig" name="act_fig" class="btn btn-primary" value="add">Добавить</button>
+	</div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+	<div class="col-md-4">
+		<button id="del_fig" name="act_fig" class="btn btn-primary" value="delete">Удалить</button>
+	</div>
+</div>
+
+</fieldset>
+</form>
+
+<div id="container">
+	<canvas id="c"></canvas>
+	<div id="labels"></div>
+</div>
+
+
+
+<script type="module">
+	import {main, makeFigure, deleteFigure} from '/static/js/postcard/cube.js';
+	main();
+	let elem;
+	let form = document.forms.controls;
+	let textfield = document.querySelector("#textinput");
+	{% if postcard.contents %}
+	{% for content in postcard.contents.all %}
+		makeFigure("{{ content.type }}", {{ content.color }}, {{ content.id }});
+		let elem{{ content.id}} = document.querySelector("#id{{ content.id }}");
+		elem{{ content.id}}.className = "test{{ content.id }}";
+		elem{{ content.id}}.onclick = (e)=> {textfield.value = {{ content.id }};};
+	{% endfor %}
+	{% endif %}
+
+	let addButton = form.add_fig;
+	addButton.addEventListener("click", (e)=>{makeFigure(form.select_figure.value, form.select_color.value);});
+
+</script>
+{% endblock %}
+
+
+{% block content %}
+<h1>Новый пост</h1>
+<p>{{ act_fig }}</p>
+<form method="POST" class="post-form">{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="save btn btn-default">Сохранить</button>
+</form>
+{% endblock %}

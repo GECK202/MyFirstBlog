@@ -1,0 +1,64 @@
+{% extends 'blog/base.html' %}
+
+{% block script %}
+
+<div id="container">
+	<canvas id="c"></canvas>
+	<div id="labels"></div>
+</div>
+
+
+
+<script type="module">
+	import {main, makeFigure, deleteFigure} from '/static/js/postcard/cube.js';
+	main();
+
+	{% if postcard.contents %}
+	{% for content in postcard.contents.all %}
+
+		makeFigure("{{ content.type }}", {{ content.color }});
+
+	{% endfor %}
+	{% endif %}
+
+</script>
+{% endblock %}
+
+{% block content %}
+	<div class="postcard">
+		{% if postcard.published_date %}
+			<div class="date">
+				{{ postcard.published_date }}
+			</div>
+		{% else %}
+			<a class="btn btn-default" href="{% url 'postcard_publish' pk=postcard.pk %}">Опубликовать</a>
+		{% endif %}
+		{% if user.is_authenticated and postcard.author == user %}
+			<a class="btn btn-default" href="{% url 'postcard_edit' pk=postcard.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+			<a class="btn btn-default" href="{% url 'postcard_remove' pk=postcard.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+		{% endif %}
+		<h1>{{ postcard.title }}</h1>
+		<!--canvas id="c"></canvas-->
+		<p>{{ postcard.text|linebreaksbr }}</p>
+	</div>
+
+	<hr>
+	<a class="btn btn-default" href="{% url 'add_comment_to_postcard' pk=postcard.pk %}">Добавить комментарий</a>
+	{% for comment in postcard.comments.all %}
+		{% if user.is_authenticated or comment.approved_comment %}
+			<div class="comment">
+				<div class="date">
+					{{ comment.created_date }}
+					{% if not comment.approved_comment %}
+						<a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+						<a class="btn btn-default" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+					{% endif %}
+				</div>
+				<strong>{{ comment.author }}</strong>
+				<p>{{ comment.text|linebreaks }}</p>
+			</div>
+		{% endif %}
+		{% empty %}
+		<p>Пока нет комментариев :(</p>
+	{% endfor %}
+{% endblock %}

@@ -3,14 +3,15 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.post_list, name='post_list'),
-    path('post/<int:pk>/', views.post_detail, name='post_detail'),
-    path('post/new/', views.post_new, name='post_new'),
-    path('post/<int:pk>/edit/', views.post_edit, name='post_edit'),
-    path('drafts/', views.post_draft_list, name='post_draft_list'),
-    path('post/<int:pk>/publish/', views.post_publish, name='post_publish'),
-    path('post/<pk>/remove/', views.post_remove, name='post_remove'),
-    path('post/<int:pk>/comment/', views.add_comment_to_post, name='add_comment_to_post'),
-    path('comment/<int:pk>/approve/', views.comment_approve, name='comment_approve'),
-    path('comment/<int:pk>/remove/', views.comment_remove, name='comment_remove'),
+	path('', views.postcard_list, name='postcard_list'),
+	path('postcard/<int:pk>/', views.postcard_detail, name='postcard_detail'),
+	path('postcard/new/', views.postcard_new, name='postcard_new'),
+	path('postcard/<int:pk>/edit/', views.postcard_edit, name='postcard_edit'),
+	path('drafts/', views.postcard_draft_list, name='postcard_draft_list'),
+	path('postcard/<int:pk>/publish/', views.postcard_publish, name='postcard_publish'),
+	path('postcard/<pk>/remove/', views.postcard_remove, name='postcard_remove'),
+	path('postcard/<int:pk>/comment/', views.add_comment_to_postcard, name='add_comment_to_postcard'),
+	path('comment/<int:pk>/approve/', views.comment_approve, name='comment_approve'),
+	path('comment/<int:pk>/remove/', views.comment_remove, name='comment_remove'),
+	path('register/', views.register, name='register'),
 ]

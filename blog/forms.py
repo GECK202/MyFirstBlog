@@ -1,16 +1,22 @@
 from django import forms
 
-from .models import Post, Comment
+from .models import Postcard, Comment, Content
 
 
-class PostForm(forms.ModelForm):
+class PostcardForm(forms.ModelForm):
 
-    class Meta:
-        model = Post
-        fields = ('title', 'text',)
+	class Meta:
+		model = Postcard
+		fields = ('title', 'text',)
+
+class ContentForm(forms.ModelForm):
+
+	class Meta:
+		model = Content
+		fields = ('name', 'type', 'color', 'pos_x',)
 
 class CommentForm(forms.ModelForm):
 
-    class Meta:
-        model = Comment
-        fields = ('author', 'text',)
+	class Meta:
+		model = Comment
+		fields = ('author', 'text',)

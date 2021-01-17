@@ -1,32 +1,42 @@
+<!DOCTYPE html>
+
 {% load static %}
+
 <html>
-    <head>
-        <title>Django БЛОГ</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
-        <title>Django блог</title>
-    </head>
-    
-    <body>
-        <div class="page-header">
-            {% if user.is_authenticated %}
-                <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
-                <a href="{% url 'post_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
-                <p class="top-menu">Добро пожаловать {{ user.username }} <small>(<a href="{% url 'logout' %}">Выход</a>)</small></p>
-            {% else %}
-                <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
-            {% endif %}
-            <h1><a href="/">Django БЛОГ</a></h1>
-        </div>
-        <div class="content container">
-            <div class="row">
-                <div class="col-md-8">
-                {% block content %}
-                {% endblock %}
-                </div>
-            </div>
-        </div>
-    </body>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Lobster&subset=latin,cyrillic" rel="stylesheet" type="text/css">
+
+	<script src="{% static 'js/three/build/three.js' %}"></script>
+	<script src="{% static 'js/three/examples/js/controls/OrbitControls.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+	<title>Живые открытки</title>
+</head>
+
+<body>
+<div class="page-header">
+	{% if user.is_authenticated %}
+	<a href="{% url 'postcard_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+	<a href="{% url 'postcard_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
+	<p class="top-menu">Добро пожаловать {{ user.username }} <small>(<a href="{% url 'logout' %}">Выход</a>)</small></p>
+	{% else %}
+	<a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
+	<a href="{% url 'register' %}" class="top-menu"><span class="glyphicon glyphicon-user"></span></a>
+	{% endif %}
+	<h1><a href="/">ЖИВЫЕ ОТКРЫТКИ</a></h1>
+</div>
+{% block script %}{% endblock %}
+<div class="content container">
+	<div class="row">
+		<div class="col-md-8">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</div>
+</div>
+
+</body>
 </html>
