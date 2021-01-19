@@ -165,6 +165,11 @@ async function makeFigure(figure_name, color_name, id){
 	cubes.push(makeInstance(geometry.get(figure_name), color,  cubes.length, id));
 }
 
+async function makeFigure2(name, color, link)
+{
+	cubes.push(makeInstance(geometry.get(name), color, cubes.length, link));
+}
+
 function makeInstance(geometry, color, x, name){
 	const material = new THREE.MeshPhongMaterial({color});
 	const cube = new THREE.Mesh(geometry, material);
@@ -182,4 +187,4 @@ let cubes=[];
 let labelContainerElem;
 let geometry = new Map();
 
-export{main, deleteFigure, makeFigure};
+export{main, deleteFigure, makeFigure, makeFigure2};

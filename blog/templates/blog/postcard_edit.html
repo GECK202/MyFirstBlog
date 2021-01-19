@@ -16,6 +16,14 @@
 	</div>
 </div>
 
+<!-- Text input-->
+<div class="form-group">
+	<label class="col-md-4 control-label" for="selectbasic">Выберите цвет</label>
+	<div class="col-md-4">
+		<input id="colorinput" name="colorinput" type = "color" class="form-control input-md" value="#ff0000">
+	</div>
+</div>
+
 <!-- Select Basic -->
 <div class="form-group">
 	<label class="col-md-4 control-label" for="selectbasic">Выберите цвет</label>
@@ -66,22 +74,23 @@
 
 
 <script type="module">
-	import {main, makeFigure, deleteFigure} from '/static/js/postcard/cube.js';
+	import {main, makeFigure, deleteFigure, makeFigure2} from '/static/js/postcard/cube.js';
 	main();
+	debugger;
 	let elem;
 	let form = document.forms.controls;
 	let textfield = document.querySelector("#textinput");
 	{% if postcard.contents %}
 	{% for content in postcard.contents.all %}
-		makeFigure("{{ content.type }}", {{ content.color }}, {{ content.id }});
+		makeFigure2("{{ content.type }}", '{{ content.textcolor }}', {{ content.id }});
 		let elem{{ content.id}} = document.querySelector("#id{{ content.id }}");
 		elem{{ content.id}}.className = "test{{ content.id }}";
 		elem{{ content.id}}.onclick = (e)=> {textfield.value = {{ content.id }};};
 	{% endfor %}
 	{% endif %}
 
-	let addButton = form.add_fig;
-	addButton.addEventListener("click", (e)=>{makeFigure(form.select_figure.value, form.select_color.value);});
+	//let addButton = form.add_fig;
+	//addButton.addEventListener("click", (e)=>{makeFigure(form.select_figure.value, form.select_color.value);});
 
 </script>
 {% endblock %}

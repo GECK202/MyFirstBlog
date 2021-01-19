@@ -70,9 +70,11 @@ def postcard_edit(request, pk):
 			colorList = {'Aqua':0x44aa88,'Purple':0x8844aa,'Gold':0xaa8844}
 			color_name = request.GET.get("select_color")
 			color = colorList[color_name]
-			fig.color = color
+			colort = request.GET.get("colorinput")
+			fig.textcolor = colort
+			fig.color = int(color)
 			fig.type = request.GET.get("select_figure")
-
+			fig.name = fig.type + " " + color_name
 			fig.save()
 		elif (act_key == 'delete'):
 			try:

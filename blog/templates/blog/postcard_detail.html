@@ -10,13 +10,13 @@
 
 
 <script type="module">
-	import {main, makeFigure, deleteFigure} from '/static/js/postcard/cube.js';
+	import {main, makeFigure2, deleteFigure} from '/static/js/postcard/cube.js';
 	main();
 
 	{% if postcard.contents %}
 	{% for content in postcard.contents.all %}
 
-		makeFigure("{{ content.type }}", {{ content.color }});
+		makeFigure2("{{ content.type }}", '{{ content.textcolor }}', "{{ content.name }}");
 
 	{% endfor %}
 	{% endif %}

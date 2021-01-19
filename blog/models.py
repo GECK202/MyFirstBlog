@@ -27,6 +27,7 @@ class Postcard(models.Model):
 class Content(models.Model):
 	postcard = models.ForeignKey(Postcard, on_delete=models.CASCADE, related_name='contents')
 	color = models.PositiveIntegerField(default = 0x44aa88)
+	textcolor = models.CharField(max_length = 10, default = '#ff0000')
 	type = models.CharField(max_length=200)
 	name = models.CharField(max_length=200)
 	pos_x = models.SmallIntegerField(default = 0)

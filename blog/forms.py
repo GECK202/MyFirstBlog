@@ -7,7 +7,7 @@ class PostcardForm(forms.ModelForm):
 
 	class Meta:
 		model = Postcard
-		fields = ('title', 'text',)
+		fields = ('title',)
 
 class ContentForm(forms.ModelForm):
 
